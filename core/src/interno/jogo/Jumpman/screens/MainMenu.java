@@ -62,6 +62,7 @@ public class MainMenu implements Screen {
         skin = new Skin(atlas);
 
         table = new Table();
+        table.top();
         table.setFillParent(true); // Faz a tabela preencher o Stage
 
         // Fontes carregadas em bitmap
@@ -94,17 +95,16 @@ public class MainMenu implements Screen {
         });
         buttonPlay.pad(25);
 
-        // Criando heading
         heading = new Label(JumpMain.TITULO, new LabelStyle(white, Color.WHITE));
         heading.setFontScale(2f);    
 
         // Colocando tudo junto
-        table.add(heading).align(0);
-        table.getCell(heading).spaceBottom(300);
+        table.add(heading).expandX().top().padTop(20);
+        table.getCell(heading).spaceBottom(450);
         table.row();
         table.add(buttonPlay).uniform().spaceBottom(15); // Usa tamanho uniforme
         table.row();
-        table.add(buttonExit).uniform();
+        table.add(buttonExit).uniform().spaceBottom(150);
 
         // Adiciona a tabela ao stage
         stage.addActor(table);
