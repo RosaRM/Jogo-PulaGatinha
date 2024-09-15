@@ -90,7 +90,7 @@ public class MainMenu implements Screen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Level());
             }
         });
         buttonPlay.pad(25);
