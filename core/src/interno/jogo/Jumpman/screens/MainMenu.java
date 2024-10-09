@@ -34,7 +34,7 @@ public class MainMenu implements Screen {
     private TextureAtlas atlas;
     private Skin skin;
     private Table table;
-    private TextButton buttonPlay, buttonExit;
+    private TextButton buttonPlay, buttonExit, buttonHistoria;
     private BitmapFont white, black;
     private Label heading;
     private Viewport viewport;
@@ -86,11 +86,21 @@ public class MainMenu implements Screen {
         });
         buttonExit.pad(29);
 
+        buttonHistoria = new TextButton("HISTÓRIA", textButtonStyle);
+        buttonHistoria.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Historia());
+            }
+        });
+        buttonHistoria.pad(25);
+        
+        
         buttonPlay = new TextButton("PLAY", textButtonStyle);
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Level());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Play());
             }
         });
         buttonPlay.pad(25);
@@ -103,6 +113,8 @@ public class MainMenu implements Screen {
         table.getCell(heading).spaceBottom(450);
         table.row();
         table.add(buttonPlay).uniform().spaceBottom(15); // Usa tamanho uniforme
+        table.row();
+        table.add(buttonHistoria).uniform().spaceBottom(15); // Usa tamanho uniforme
         table.row();
         table.add(buttonExit).uniform().spaceBottom(150);
 

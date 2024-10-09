@@ -21,10 +21,11 @@ public class Splash implements Screen {
 	private SpriteBatch batch;
 	private Sprite splash;
 	private TweenManager tweenManager;
+	
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
-		tweenManager = new TweenManager();
+		tweenManager = new TweenManager();	
 		Tween.registerAccessor(Sprite.class, (TweenAccessor<?>) new SpriteAccessor());		
 		
 		Texture splashTexture = new Texture(Gdx.files.internal("img/fundoss.jpeg"));
@@ -32,7 +33,7 @@ public class Splash implements Screen {
 		splash.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight() );
 		
 		Tween.set(splash, SpriteAccessor.ALPHA).target(0).start(tweenManager);
-		Tween.to(splash, SpriteAccessor.ALPHA, 2).target(1).repeatYoyo(1,0.5f).setCallback(new TweenCallback(){
+		Tween.to(splash, SpriteAccessor.ALPHA, 2).target(1).repeatYoyo(1,0.2f).setCallback(new TweenCallback(){
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
 				((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenu());
