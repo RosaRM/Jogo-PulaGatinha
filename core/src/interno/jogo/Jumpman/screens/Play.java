@@ -1,9 +1,11 @@
 package interno.jogo.Jumpman.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -15,19 +17,28 @@ import interno.jogo.Jumpman.Plataforma;
 import interno.jogo.Jumpman.Player;
 
 public class Play implements Screen {
-    private World world;
-    private SpriteBatch batch;
     private OrthographicCamera camera;
     private Player player;
-    private Array<Plataforma> platformas; // Array de plataformas
-    private ShapeRenderer shapeRenderer;
-
-    private final float TIMESTEP = 1 / 60F;
-    private final int VELOCITYITERATIONS = 6, POSITIONITERATIONS = 2;     
+    private Array<Plataforma> plataformas;
+    private Texture playerTexture;
+    private Texture plataformaTexture;
+	private SpriteBatch batch;
     RandomXS128 random = new RandomXS128();
     
-    private final float PLATFORM_WIDTH = 120f;  // Largura padrão das plataformas
-    private final float PLATFORM_HEIGHT = 20f; // Altura padrão das plataformas
+    public int PosX = 300, PosY = 250;
+
+    public Play() {
+
+
+	    playerTexture = new Texture("img/gatinhaDoPula.png");
+	    plataformaTexture = new Texture("img/plataforma.png");
+
+        
+	    player = new Player(playerTexture, PosX, PosY);  
+	    
+        plataformas = new Array<>();
+        plataformas.add(new Plataforma(plataformaTexture, PosX, PosY - 50));
+    }
 
     private void createPlatforms() {
         float baseY = 50; // A altura mínima para a primeira plataforma
@@ -36,7 +47,7 @@ public class Play implements Screen {
         float lastY = baseY; // Começa a partir de baseY
 
         // Gera plataformas em posições aleatórias
-        for (int i = 0; i < 10; i++) { // Gera 4 plataformas
+        for (int i = 0; i < 10; i++) { 
             float x = random.nextFloat() * Gdx.graphics.getWidth(); // Ajuste para a largura total da tela
             
             // Calcula o novo Y com um deslocamento aleatório
@@ -45,93 +56,72 @@ public class Play implements Screen {
 
             // Verifica se a plataforma está dentro do limite superior da tela
             if (lastY <= Gdx.graphics.getHeight()) { // Verifica se está dentro da altura total da tela
-                Plataforma plataforma = new Plataforma(world, x, lastY, PLATFORM_WIDTH, PLATFORM_HEIGHT); // Não dividir por 20
-                platformas.add(plataforma);
+                Plataforma plataforma = new Plataforma(plataformaTexture, x, lastY); // Não dividir por 20
+                plataformas.add(plataforma);
             }
-            Gdx.app.log("Plataforma", "x: " + x + ", y: " + lastY);
         }
     }
 
-    // No método show(), ajuste a câmera
-    @Override
-    public void show() {
-        world = new World(new Vector2(0, -9.81f), true);
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Ajustando a câmera para as dimensões reais
-        player = new Player(world, 300, 400, 100); // Posição centralizada
-
-        platformas = new Array<>();
-        createPlatforms(); // Cria plataformas ao iniciar o jogo
-
-        Gdx.input.setInputProcessor(player);
-        
-    }
-
-
-
+    
     @Override
     public void render(float delta) {
-        // Atualiza a lógica do jogo
-        world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
+    	
         
-        // Lógica do loop hole ajustada
-        Body playerBody = player.getBody(); // obtem o corpo do jogador
-        float playerX = playerBody.getPosition().x; 
-        float playerWidth = player.width; 
-        float playerHeight = player.height; // Adicione esta linha para obter a altura do jogador
-        
-        if (playerX > (Gdx.graphics.getWidth() + playerWidth / 2)) {
-            playerBody.setTransform(-playerWidth / 2, playerBody.getPosition().y, playerBody.getAngle());
-        } else if (playerX < (-playerWidth / 2)) {
-            playerBody.setTransform(Gdx.graphics.getWidth() + playerWidth / 2, playerBody.getPosition().y, playerBody.getAngle());
-        } 
-        
-        if (player.isOnGround) {  // Verifica se o jogador está no chão
-            player.jump();  // Chama o método de salto
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+        camera.update();
+
+        // Atualizar jogador e plataformas
+        player.update(delta, plataformas);  // Passar as plataformas para o jogador verificar as colisões
+        for (Plataforma platform : plataformas) {
+            platform.update(delta);
         }
 
-        player.update(delta);
-
-        // Limpa a tela
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-
+        // Desenhar jogador e plataformas
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-
-        // Renderiza as plataformas
-        for (Plataforma plataforma : platformas) {
-            plataforma.getSprite().setPosition(plataforma.getBody().getPosition().x - plataforma.getWidth() / 2, plataforma.getBody().getPosition().y - plataforma.getHeight() / 2);
-            plataforma.getSprite().draw(batch);
-        }
-
-        // Renderiza o jogador
-        player.getSprite().setPosition(player.getBody().getPosition().x - player.getWidth() / 2, player.getBody().getPosition().y - player.getHeight() / 2);
         player.getSprite().draw(batch);
-
-        batch.end();
-
-        // Desenha os contornos das plataformas
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 0, 0, 1); // Cor vermelha para os contornos
-
-        for (Plataforma plataforma : platformas) {
-            float x = plataforma.getBody().getPosition().x - plataforma.getWidth() / 2;
-            float y = plataforma.getBody().getPosition().y - plataforma.getHeight() / 2;
-            shapeRenderer.rect(x, y, plataforma.getWidth(), plataforma.getHeight());
+        for (Plataforma platform : plataformas) {
+            platform.getSprite().draw(batch);
         }
-
-        // Desenha o contorno do jogador
-        float playerXPosition = player.getBody().getPosition().x - playerWidth / 2;
-        float playerYPosition = player.getBody().getPosition().y - playerHeight / 2;
-        shapeRenderer.rect(playerXPosition, playerYPosition, playerWidth, playerHeight); // Desenha a caixa ao redor do jogador
-
-        shapeRenderer.end();
+        batch.end();
     }
+
+
+    // Implementação de outros métodos exigidos pela interface Screen (show, resize, etc.)
+
+
+	// No método show(), ajuste a câmera
+	@Override
+	public void show() {
+	    Gdx.input.setInputProcessor(new InputAdapter() {
+	        @Override
+	        public boolean keyDown(int keycode) {
+	            return player.keyDown(keycode);  // Delegar para o jogador
+	        }
+
+	        @Override
+	        public boolean keyUp(int keycode) {
+	            return player.keyUp(keycode);  // Delegar para o jogador
+	        }
+	    });
+	    batch = new SpriteBatch();
+	
+	    // Configura a câmera
+	    camera = new OrthographicCamera();
+	    camera.setToOrtho(false, 800, 480);  // Defina as dimensões da tela (largura e altura)
+	
+	    // Carrega as texturas
+	    playerTexture = new Texture("img/gatinhaDoPula.png");
+	    plataformaTexture = new Texture("img/plataforma.png");
+	
+	    // Cria o jogador e as plataformas
+	    player = new Player(playerTexture, PosX, PosY);
+	    plataformas = new Array<>();
+	    createPlatforms();
+        plataformas.add(new Plataforma(plataformaTexture, PosX, PosY - 50));
+	}
+	
+		
 
     @Override
     public void resize(int width, int height) {
@@ -150,7 +140,5 @@ public class Play implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        shapeRenderer.dispose(); 
-        world.dispose();
     }
 }

@@ -2,6 +2,7 @@ package interno.jogo.Jumpman;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,57 +12,35 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Plataforma {
-    private Body body;
     private Sprite sprite;
-    private float width;  
-    private float height;
-    
-    public Plataforma(World world, float x, float y, float width, float height) {
-        this.width = width;   // Inicializa a largura
-        this.height = height; // Inicializa a altura
+    private Vector2 position;
 
-        // Cria o corpo da plataforma
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.StaticBody;
-        bodyDef.position.set(new Vector2(x, y));
-
-        body = world.createBody(bodyDef);
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2, height / 2);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 0.0f;
-        fixtureDef.restitution = 0;
-
-        body.createFixture(fixtureDef);
-        body.setUserData("platform"); // Define "platform" como UserData para a colisão
-
-        shape.dispose();
-
-        // Cria o sprite para a plataforma
-        sprite = new Sprite(new Texture("img/plataforma.png"));
-        sprite.setSize(width, height); // Aumentando o tamanho da plataforma
-        sprite.setOrigin(width / 2, height / 2); // Ajuste a origem para o centro do sprite
-
-        // ** Não sobrescreva o UserData do corpo após definir o sprite **
+    public Plataforma(Texture texture, float x, float y) {
+        this.sprite = new Sprite(texture);
+        this.position = new Vector2(x, y);
+        sprite.setPosition(position.x, position.y);
     }
+
+    public void update(float deltaTime) {
+        // Lógica para mover a plataforma (se necessário)
+
+        // Se a plataforma sair da parte inferior da tela (y < 0)
+        if (position.y + sprite.getHeight() < 0) {
+            // Reposiciona a plataforma no topo da tela em uma nova posição x aleatória
+            position.y = 480;  // Ou a altura da sua tela
+            position.x = MathUtils.random(0, 800 - sprite.getWidth());  // Coloca em uma posição x aleatória
+
+            // Atualiza a posição do sprite para corresponder ao novo posicionamento
+            sprite.setPosition(position.x, position.y);
+        }
+    }
+
 
     public Sprite getSprite() {
         return sprite;
     }
 
-    public float getWidth() {
-        return width; 
-    }
-
-    public float getHeight() {
-        return height; 
-    }
-
-    public Body getBody() {
-        return body; // Adicionando o método getBody para obter o corpo da plataforma
+    public Vector2 getPosition() {
+        return position;
     }
 }

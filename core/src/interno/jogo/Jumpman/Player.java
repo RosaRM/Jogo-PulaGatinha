@@ -13,119 +13,105 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import interno.jogo.Jumpman.screens.MainMenu;
+import interno.jogo.Jumpman.screens.Play;
+
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
-
-public class Player extends InputAdapter {
-    private Body body;
-    private Fixture fixture;
-    public final float width, height;
-    private Vector2 velocity = new Vector2();
-    private float movementSpeed = 100f; // Velocidade do movimento
-    private float jumpForce = 1000f; // Força de pulo ajustada
-    public boolean isOnGround = false; // Flag para saber se está no chão
+public class Player extends InputController{
     private Sprite sprite;
+    private Vector2 position;
+    private Vector2 velocity;
+    private float gravity = -55f;
+    private boolean jumping = false;
+    private float jumpVelocity = 300f, horizontaVelocity = 300f;
+    public int width = 64, height = 132;
 
-    public Player(World world, float x, float y, float width) {
-        this.width = width;
-        height = width * 2;
+    public Player(Texture texture, float x, float y) {
+        this.sprite = new Sprite(texture);
+        this.position = new Vector2(x, y);
+        this.velocity = new Vector2(0, 0);
 
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.set(x, y);
-        bodyDef.fixedRotation = true;
-
-        // Criando a forma do corpo
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2, height / 2); // Ajustar largura e altura
-
-        // Configurando o fixture
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.restitution = 0.1f; // Pequeno bounce
-        fixtureDef.friction = 0.5f;
-        fixtureDef.density = 1;
-
-        body = world.createBody(bodyDef);
-        fixture = body.createFixture(fixtureDef);
-        fixture.setUserData("player"); // Adiciona um identificador ao fixture
-
-        sprite = new Sprite(new Texture("img/gatinhaDoPula.png"));
-        sprite.setSize(width, height); // Mantém o tamanho do sprite
-        sprite.setOrigin(width / 2, height / 2); // Define a origem para o centro do sprite
-        body.setUserData(sprite);
-
-        shape.dispose();
-
-     // Adicionando o ContactListener
-     // ContactListener dentro da classe Player
-        world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact contact) {
-                if ((contact.getFixtureA().getBody().getUserData() != null && contact.getFixtureA().getBody().getUserData().equals("platform")) ||
-                    (contact.getFixtureB().getBody().getUserData() != null && contact.getFixtureB().getBody().getUserData().equals("platform"))) {
-                    
-                    if (body.getLinearVelocity().y < 0) { // Certifica que o jogador está caindo
-                        isOnGround = true;  // Apenas permite pular quando estiver caindo
-                    }
-                }
-            }
-
-            @Override
-            public void endContact(Contact contact) {
-                if ((contact.getFixtureA().getBody().getUserData() != null && contact.getFixtureA().getBody().getUserData().equals("platform")) ||
-                    (contact.getFixtureB().getBody().getUserData() != null && contact.getFixtureB().getBody().getUserData().equals("platform"))) {
-                    isOnGround = false;  // Sai do chão ao deixar a plataforma
-                }
-            }
-
-            @Override
-            public void preSolve(Contact contact, com.badlogic.gdx.physics.box2d.Manifold oldManifold) {}
-            @Override
-            public void postSolve(Contact contact, com.badlogic.gdx.physics.box2d.ContactImpulse impulse) {}
-        });
-
-
+        // Define o tamanho do sprite
+        sprite.setSize(width, height);
+        sprite.setPosition(position.x, position.y);
     }
 
-    public void update(float deltaTime) {
-        // Atualiza a posição do sprite com a posição do corpo
-        sprite.setPosition(body.getPosition().x - width / 2, body.getPosition().y - height / 2); // Centraliza o sprite
-
-        // Mantém a velocidade horizontal constante (ou o que for desejado)
-        Vector2 currentVelocity = body.getLinearVelocity();
-        body.setLinearVelocity(velocity.x, currentVelocity.y); // Só altera a componente horizontal
-
-        // Pulo automático: verifica se o jogador está no chão e está caindo
-        if (isOnGround && currentVelocity.y <= 0) { // Verifica se a velocidade é negativa (caindo)
-            jump();  // Executa o pulo automático
+    
+    
+    public void update(float deltaTime, Array<Plataforma> plataformas) {
+    	  // Lógica de movimentação para reposicionar o jogador se sair da tela
+        float playerWidth = sprite.getWidth();
+        if (position.x > (Gdx.graphics.getWidth() - playerWidth /2   )) {
+            position.x = -playerWidth /2 ;  // Reposiciona à esquerda
+        } else if (position.x < (-playerWidth /2 )) {
+            position.x = Gdx.graphics.getWidth() - playerWidth /2;  // Reposiciona à direita
         }
+        
+        // Aplica a gravidade sempre, exceto se o jogador estiver no chão ou sobre uma plataforma
+        if (position.y > 0 || velocity.y > 0) {
+            velocity.y += gravity * deltaTime;
+        }
+
+        // Atualiza a posição do jogador com base na gravidade e velocidade
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+
+        // Verifica se o jogador está colidindo com alguma plataforma
+        for (Plataforma plataforma : plataformas) {
+            if (isOnPlatform(plataforma) && velocity.y < 0) {
+                // Pular automaticamente ao pousar em uma plataforma
+                jump();
+                break;
+            }
+        }
+
+        // Impede o jogador de cair abaixo do "chão"
+        if (position.y <= 0) {
+            position.y = 0;
+            velocity.y = 0;
+            jumping = false;
+        }
+
+        // Atualiza a posição do sprite
+        sprite.setPosition(position.x, position.y);
+    }
+    
+    private boolean isOnPlatform(Plataforma plataforma) {
+        // Verifica se o jogador está "em cima" da plataforma
+        return position.y > plataforma.getPosition().y &&
+               position.y - velocity.y * Gdx.graphics.getDeltaTime() <= plataforma.getPosition().y + plataforma.getSprite().getHeight() &&
+               position.x + sprite.getWidth() > plataforma.getPosition().x &&
+               position.x < plataforma.getPosition().x + plataforma.getSprite().getWidth();
     }
 
- // Na classe Player
+
     public void jump() {
-        if (isOnGround) {
-            body.setLinearVelocity(body.getLinearVelocity().x, 0); // Zera a velocidade vertical antes do pulo
-            body.applyLinearImpulse(new Vector2(0, jumpForce), body.getWorldCenter(), true);
-            isOnGround = false;  // Define como falso logo após pular
-        }
+        // Apenas pula se o jogador não estiver no ar
+        velocity.y = jumpVelocity;
+        jumping = true;
     }
 
+    public Sprite getSprite() {
+        return sprite;
+    }
 
-    @Override
+    public Vector2 getPosition() {
+        return position;
+    }
+    
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Keys.ESCAPE:
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 break;
             case Keys.D:
-                velocity.x = movementSpeed;  // Movimentação para a direita
+            	velocity.x = horizontaVelocity;  // Movimentação para a direita
                 break;
             case Keys.A:
-                velocity.x = -movementSpeed;  // Movimentação para a esquerda
+            	velocity.x = -horizontaVelocity;  // Movimentação para a esquerda
                 break;
             default:
                 return false;
@@ -133,7 +119,7 @@ public class Player extends InputAdapter {
         return true;
     }
 
-    @Override
+    
     public boolean keyUp(int keycode) {
         if (keycode == Keys.A || keycode == Keys.D) {
             velocity.x = 0;
@@ -141,25 +127,5 @@ public class Player extends InputAdapter {
             return false;
         }
         return true;
-    }
-
-    public Body getBody() {
-        return body;
-    }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public Fixture getFixture() {
-        return fixture;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public float getHeight() {
-        return height;
     }
 }
