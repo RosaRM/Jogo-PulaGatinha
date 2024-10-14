@@ -16,6 +16,5 @@ public class DesktopLauncher {
         config.height = 1280;
 		new LwjglApplication(new JumpMain(), config);
 		
-		//System.out.println(Gdx.files.internal("font/Branca.fnt").exists());
 	}
 }

@@ -8,30 +8,23 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import interno.jogo.Jumpman.screens.MainMenu;
 import interno.jogo.Jumpman.screens.Play;
 import interno.jogo.Jumpman.screens.Pontuacao;
+import interno.jogo.Jumpman.Plataforma;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-
-public class Player extends InputController {
+public class Player  {
     // Atributos da classe Player
     private Sprite sprite;  // Representa a imagem do jogador
     private Vector2 position;  // Vetor que armazena a posição (x, y) do jogador
     private Vector2 velocity;  // Vetor para a velocidade (x, y) do jogador
-    private float gravity = -55f;  // Força da gravidade aplicada ao jogador
+    private float gravity = -250f;  // Força da gravidade aplicada ao jogador
     private boolean jumping = false;  // Indica se o jogador está pulando
     private boolean IsDead = false;  // Indica se o jogador "morreu"
     private boolean IsFliped = false;  // Indica se o jogador esta virado
-    private float jumpVelocity = 300f, horizontaVelocity = 300f;  // Velocidades de pulo e movimento horizontal
+    private float jumpVelocity = 350f, horizontaVelocity = 300f;  // Velocidades de pulo e movimento horizontal
     public int width = 64, height = 132;  // Tamanho do sprite do jogador
 
     // Construtor da classe Player
@@ -47,7 +40,9 @@ public class Player extends InputController {
 
     // Método update: atualiza a lógica do jogador a cada frame
     public void update(float deltaTime, Array<Plataforma> plataformas) {
-        // Lógica de movimentação para reposicionar o jogador se sair da tela
+		System.out.println(velocity.y);
+		
+		// Lógica de movimentação para reposicionar o jogador se sair da tela
         float playerWidth = sprite.getWidth();
         if (position.x > (Gdx.graphics.getWidth() - playerWidth /2)) {
             position.x = -playerWidth /2;  // Reposiciona o jogador à esquerda quando sai pela direita
@@ -74,10 +69,30 @@ public class Player extends InputController {
 
         // Impede o jogador de cair abaixo do "chão"
         if (position.y <= 0) {
-            velocity.y = 0;  // Zera a velocidade vertical
             jumping = false;  // O jogador não está mais pulando
             IsDead = true;  // Marca o jogador como "morto"
         }
+        
+         // Impede o jogador de cair abaixo do "chão"
+        if (position.y >= Gdx.graphics.getHeight() /1.75f) {
+        	position.y = Gdx.graphics.getHeight() /1.75f;
+        	// Ativa o movimento da plataforma para baixo na velocidade adequada
+            for (Plataforma plataforma : plataformas) {
+                plataforma.ativarMovimento(true);
+                plataforma.setVel(velocity);
+
+            }
+        }
+        // para o movimento se não estiver em posição
+        else {
+            for (Plataforma plataforma : plataformas) {
+                plataforma.ativarMovimento(false);
+            }
+        }
+
+        // Verifica se o jogador está na posição desejada
+
+        // Atualiza o estado de movimento de todas as plataformas
 
         // Se o jogador está "morto", muda para a tela de pontuação
         if (IsDead == true) {
@@ -85,21 +100,13 @@ public class Player extends InputController {
             ((Game) Gdx.app.getApplicationListener()).setScreen(new Pontuacao());  // Troca para a tela de pontuação
         }
         
-        // Se o jogador está "morto", muda para a tela de pontuação
-        if (IsFliped == true) {
-            sprite.flip(true, false);
-            IsFliped = false;// Flipa a textura do jogador
-        }
-        else
-            sprite.flip(false, false);  // Flipa a textura do jogador para a original
-
         // Atualiza a posição do sprite com base na nova posição do jogador
         sprite.setPosition(position.x, position.y);
     }
 
     // Verifica se o jogador está em uma plataforma
     private boolean isOnPlatform(Plataforma plataforma) {
-        return position.y > plataforma.getPosition().y &&  // O jogador está acima da plataforma
+        return position.y > plataforma.getPosition().y  &&  // O jogador está acima da plataforma
                position.y - velocity.y * Gdx.graphics.getDeltaTime() <= plataforma.getPosition().y + plataforma.getSprite().getHeight() &&  // O jogador está pousando na plataforma
                position.x + sprite.getWidth() > plataforma.getPosition().x &&  // Verifica sobreposição no eixo X
                position.x < plataforma.getPosition().x + plataforma.getSprite().getWidth();  // Verifica sobreposição no eixo X
@@ -127,12 +134,20 @@ public class Player extends InputController {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());  // Vai para o menu principal
                 break;
             case Keys.D:
-                velocity.x = horizontaVelocity;  // Move o jogador para a direita
-                IsFliped = true;
+            case Keys.RIGHT:
+                if (IsFliped) {
+                    sprite.flip(true, false); // Vira o sprite
+                    IsFliped = false; // Atualiza a direção
+                }
+                velocity.x = horizontaVelocity; // Move o jogador para a direita                IsFliped = true;
                 break;
             case Keys.A:
+            case Keys.LEFT:
+                if (!IsFliped) {
+                    sprite.flip(true, false); // Vira o sprite
+                    IsFliped = true; // Atualiza a direção
+                }
                 velocity.x = -horizontaVelocity;  // Move o jogador para a esquerda
-                IsFliped = true;
                 break;
             case Keys.W:  // Para testes: faz o jogador pular ao pressionar W
                 jump();
@@ -145,7 +160,7 @@ public class Player extends InputController {
 
     // Lida com eventos de tecla solta
     public boolean keyUp(int keycode) {
-        if (keycode == Keys.A || keycode == Keys.D) {
+        if (keycode == Keys.A || keycode == Keys.D || keycode == Keys.LEFT || keycode == Keys.RIGHT) {
             velocity.x = 0;  // Para a movimentação horizontal quando as teclas A ou D são soltas
         } else {
             return false;

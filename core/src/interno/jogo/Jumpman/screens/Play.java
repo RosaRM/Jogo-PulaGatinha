@@ -38,20 +38,20 @@ public class Play implements Screen {
 
     private void createPlatforms() {
         float baseY = 50; // Altura mínima para a primeira plataforma
-        float maxOffset = 150; // Deslocamento máximo entre as plataformas
-        float minOffset = 50; // Deslocamento mínimo entre as plataformas
+        float maxOffset = 100; // Deslocamento máximo entre as plataformas
+        float minOffset = 25; // Deslocamento mínimo entre as plataformas
         float lastY = baseY; // Começando a partir de baseY
 
         // Gerando plataformas em posições aleatórias
-        for (int i = 0; i < 15; i++) { 
-            float x = random.nextFloat() * Gdx.graphics.getWidth() - plataformaTexture.getWidth(); // Posição X aleatória dentro da largura da tela
+        for (int i = 0; i < 30; i++) { 
+            float x = random.nextFloat() *( Gdx.graphics.getWidth() - plataformaTexture.getWidth()); // Posição X aleatória dentro da largura da tela
             
             // Calculando o novo Y com um deslocamento aleatório
             float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
             lastY += offsetY; // Aumentando a altura com o deslocamento
 
             // Verificando se a plataforma está dentro do limite superior da tela
-            if (lastY <= Gdx.graphics.getHeight() ) { // Certificando-se que a altura não excede a tela
+            if (lastY <= Gdx.graphics.getHeight() * 1.8) { // Certificando-se que a altura não excede a tela
                 Plataforma plataforma = new Plataforma(plataformaTexture, x, lastY); // Criando a plataforma
                 plataformas.add(plataforma); // Adicionando a plataforma ao array
             }
