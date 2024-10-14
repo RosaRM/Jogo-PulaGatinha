@@ -21,102 +21,103 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import aurelienribon.tweenengine.TweenManager;
 import interno.jogo.Jumpman.JumpMain;
 
 public class MainMenu implements Screen {
 
-	
-	private SpriteBatch batch;
-	private Sprite splash;
-    private Stage stage;
-    private TextureAtlas atlas;
-    private Skin skin;
-    private Table table;
-    private TextButton buttonPlay, buttonExit, buttonHistoria;
-    private BitmapFont white, black;
-    private Label heading;
-    private Viewport viewport;
-    private Sprite bg;
+    // Atributos principais da classe MainMenu
+    private SpriteBatch batch;  // Para desenhar imagens na tela
+    private Stage stage;  // Gerencia atores (botões, labels, etc.)
+    private TextureAtlas atlas;  // Armazena as imagens dos botões
+    private Skin skin;  // Aplica o estilo do botão
+    private Table table;  // Organiza visualmente os elementos da interface
+    private TextButton buttonPlay, buttonExit, buttonHistoria;  // Botões do menu
+    private BitmapFont white, black;  // Fontes utilizadas no texto dos botões
+    private Label heading;  // Título do menu
+    private Viewport viewport;  // Gerencia as dimensões da tela
+    private Sprite bg;  // Imagem de fundo do menu
 
     @Override
     public void show() {
-    	
-        batch = new SpriteBatch();
-        Texture bgTexture = new Texture(Gdx.files.internal("img/Rafundo.jpeg"));
-        bg = new Sprite(bgTexture);
-        bg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Inicialização dos elementos visuais
+        batch = new SpriteBatch();  // Inicializa o batch para desenhar os sprites
+        Texture bgTexture = new Texture(Gdx.files.internal("img/Rafundo.jpeg"));  // Carrega a imagem de fundo
+        bg = new Sprite(bgTexture);  // Cria o sprite para a imagem de fundo
+        bg.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());  // Ajusta o tamanho do fundo para preencher a tela
 
-        // Obtém a largura e altura da tela
+        // Obtém a largura e a altura da tela
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
-        // Cria o Viewport com a largura e altura
+        // Cria o viewport para ajustar o tamanho da tela ao Stage
         viewport = new StretchViewport(width, height);
 
-        stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
+        stage = new Stage(viewport);  // Inicializa o stage com o viewport
+        Gdx.input.setInputProcessor(stage);  // Define o stage como processador de entrada (para interação com botões)
 
-        atlas = new TextureAtlas("ui/button.pack");
-        skin = new Skin(atlas);
+        atlas = new TextureAtlas("ui/button.pack");  // Carrega as imagens dos botões a partir de um atlas de texturas
+        skin = new Skin(atlas);  // Associa o atlas ao skin
 
-        table = new Table();
-        table.top();
-        table.setFillParent(true); // Faz a tabela preencher o Stage
+        table = new Table();  // Cria a tabela para organizar os elementos
+        table.top();  // Posiciona a tabela no topo
+        table.setFillParent(true);  // Faz a tabela preencher todo o stage
 
-        // Fontes carregadas em bitmap
-        white = new BitmapFont(Gdx.files.internal("font/Branca.fnt"), false);
-        black = new BitmapFont(Gdx.files.internal("font/Preta.fnt"), false);
+        // Carregando fontes para os textos
+        white = new BitmapFont(Gdx.files.internal("font/Branca.fnt"), false);  // Fonte branca
+        black = new BitmapFont(Gdx.files.internal("font/Preta.fnt"), false);  // Fonte preta
 
-        // Criando botões
+        // Criando e configurando os botões
         TextButtonStyle textButtonStyle = new TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("btn-up");
-        textButtonStyle.down = skin.getDrawable("btn-down");
-        textButtonStyle.pressedOffsetX = 1;
-        textButtonStyle.pressedOffsetY = -1;
-        textButtonStyle.font = black;
+        textButtonStyle.up = skin.getDrawable("btn-up");  // Estado normal do botão
+        textButtonStyle.down = skin.getDrawable("btn-down");  // Estado pressionado do botão
+        textButtonStyle.pressedOffsetX = 1;  // Ajuste visual ao pressionar (X)
+        textButtonStyle.pressedOffsetY = -1;  // Ajuste visual ao pressionar (Y)
+        textButtonStyle.font = black;  // Define a fonte preta para o texto do botão
 
-        buttonExit = new TextButton("EXIT", textButtonStyle);
-        buttonExit.addListener(new ClickListener() {
+        // Botão EXIT
+        buttonExit = new TextButton("EXIT", textButtonStyle);  // Cria o botão de sair
+        buttonExit.addListener(new ClickListener() {  // Adiciona um listener para capturar o clique
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                Gdx.app.exit();  // Encerra o jogo ao clicar
             }
         });
-        buttonExit.pad(29);
+        buttonExit.pad(29);  // Adiciona espaçamento interno ao botão
 
-        buttonHistoria = new TextButton("HISTÓRIA", textButtonStyle);
-        buttonHistoria.addListener(new ClickListener() {
+        // Botão HISTÓRIA
+        buttonHistoria = new TextButton("HISTÓRIA", textButtonStyle);  // Cria o botão da história
+        buttonHistoria.addListener(new ClickListener() {  // Listener para mudar de tela
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Historia());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Historia());  // Troca para a tela de História
             }
         });
-        buttonHistoria.pad(25);
-        
-        
-        buttonPlay = new TextButton("PLAY", textButtonStyle);
-        buttonPlay.addListener(new ClickListener() {
+        buttonHistoria.pad(25);  // Adiciona espaçamento interno ao botão
+
+        // Botão PLAY
+        buttonPlay = new TextButton("PLAY", textButtonStyle);  // Cria o botão de jogar
+        buttonPlay.addListener(new ClickListener() {  // Listener para iniciar o jogo
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Play());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Play());  // Troca para a tela de jogo
             }
         });
-        buttonPlay.pad(25);
+        buttonPlay.pad(25);  // Adiciona espaçamento interno ao botão
 
-        heading = new Label(JumpMain.TITULO, new LabelStyle(white, Color.WHITE));
-        heading.setFontScale(2f);    
+        // Configurando o título do menu
+        heading = new Label(JumpMain.TITULO, new LabelStyle(white, Color.WHITE));  // Cria o título com fonte branca
+        heading.setFontScale(2f);  // Define o tamanho do título
 
-        // Colocando tudo junto
-        table.add(heading).expandX().top().padTop(20);
-        table.getCell(heading).spaceBottom(450);
-        table.row();
-        table.add(buttonPlay).uniform().spaceBottom(15); // Usa tamanho uniforme
-        table.row();
-        table.add(buttonHistoria).uniform().spaceBottom(15); // Usa tamanho uniforme
-        table.row();
-        table.add(buttonExit).uniform().spaceBottom(150);
+        // Organizando os elementos dentro da tabela
+        table.add(heading).expandX().top().padTop(20);  // Adiciona o título no topo da tela
+        table.getCell(heading).spaceBottom(450);  // Espaçamento abaixo do título
+        table.row();  // Próxima linha na tabela
+        table.add(buttonPlay).uniform().spaceBottom(15);  // Adiciona o botão PLAY com espaçamento uniforme
+        table.row();  // Próxima linha
+        table.add(buttonHistoria).uniform().spaceBottom(15);  // Adiciona o botão HISTÓRIA
+        table.row();  // Próxima linha
+        table.add(buttonExit).uniform().spaceBottom(150);  // Adiciona o botão EXIT
 
         // Adiciona a tabela ao stage
         stage.addActor(table);
@@ -124,22 +125,22 @@ public class MainMenu implements Screen {
 
     @Override
     public void render(float delta) {
+        // Limpa a tela com cor preta
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        
 
-        // Começa a desenhar a imagem de fundo
+        // Começa a desenhar o fundo e os elementos
         batch.begin();
-        bg.draw(batch);
+        bg.draw(batch);  // Desenha o fundo
         batch.end();
 
-        stage.act(delta);
-        stage.draw();
+        stage.act(delta);  // Atualiza o stage (elementos interativos)
+        stage.draw();  // Desenha o stage
     }
 
     @Override
     public void resize(int width, int height) {
-        // Atualiza o Viewport com as novas dimensões
+        // Atualiza o viewport se a tela for redimensionada
         viewport.update(width, height, true);
     }
 
@@ -154,8 +155,9 @@ public class MainMenu implements Screen {
 
     @Override
     public void dispose() {
-    	batch.dispose();
-        bg.getTexture().dispose(); 
+        // Libera os recursos ao encerrar a tela
+        batch.dispose();
+        bg.getTexture().dispose();
         stage.dispose();
         atlas.dispose();
         skin.dispose();

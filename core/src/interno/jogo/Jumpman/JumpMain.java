@@ -11,7 +11,7 @@ import interno.jogo.Jumpman.screens.Splash;
 
 public class JumpMain extends Game {
 
-	public static final String TITULO = "PULA GATINHA", VERSION = "0.0.0.0.1";
+	public static final String TITULO = "PULA GATINHA", VERSION = "0.0.0.0.5";
 	
 	@Override
 	public void create () {

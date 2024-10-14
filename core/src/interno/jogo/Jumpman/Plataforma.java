@@ -12,30 +12,35 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Plataforma {
-    private Sprite sprite;
-    private Vector2 position;
+    // Atributos da classe Plataforma
+    private Sprite sprite;  // Sprite que representa a imagem da plataforma
+    private Vector2 position;  // Vetor que armazena a posição (x, y) da plataforma
 
+    // Construtor da classe Plataforma
     public Plataforma(Texture texture, float x, float y) {
-        this.sprite = new Sprite(texture);
-        this.position = new Vector2(x, y);
+        this.sprite = new Sprite(texture);  // Inicializa o sprite com a textura passada como argumento
+        this.position = new Vector2(x, y);  // Define a posição inicial da plataforma
+
+        // Posiciona o sprite na tela com base na posição definida
         sprite.setPosition(position.x, position.y);
     }
 
+    // Método update: atualiza a lógica da plataforma a cada frame
     public void update(float deltaTime) {
-        // Lógica para mover a plataforma (se necessário)
+        // Lógica para mover a plataforma (caso necessário)
 
         // Se a plataforma sair da parte inferior da tela (y < 0)
         if (position.y + sprite.getHeight() < 0) {
             // Reposiciona a plataforma no topo da tela em uma nova posição x aleatória
-            position.y = 480;  // Ou a altura da sua tela
-            position.x = MathUtils.random(0, 800 - sprite.getWidth());  // Coloca em uma posição x aleatória
+            position.y = 480;  // Define o topo da tela (ajustável conforme a altura da tela do jogo)
+            position.x = MathUtils.random(0, 800 - sprite.getWidth());  // Define uma posição x aleatória dentro da largura da tela
 
-            // Atualiza a posição do sprite para corresponder ao novo posicionamento
+            // Atualiza a posição do sprite para a nova posição calculada
             sprite.setPosition(position.x, position.y);
         }
     }
 
-
+    // Métodos getters para o sprite e a posição
     public Sprite getSprite() {
         return sprite;
     }

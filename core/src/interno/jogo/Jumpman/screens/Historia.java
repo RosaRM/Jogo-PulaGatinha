@@ -48,13 +48,13 @@ public class Historia implements Screen {
     }
 
     private void iniciarTransicao() {
-        // Definir a opacidade inicial como 0 (preto)
+        // Definir a opacidade inicial como 0 (invisível)
         Tween.set(sprite, SpriteAccessor.ALPHA).target(0).start(tweenManager);
 
         // Transição para fazer a imagem aparecer
         Tween.to(sprite, SpriteAccessor.ALPHA, 2) // 2 segundos para aparecer
             .target(1)
-            .repeatYoyo(1, 1f) // Vai desaparecer depois de ficar visível
+            .repeatYoyo(1, 1f) // Faz a imagem desaparecer depois de aparecer
             .setCallback(new TweenCallback() {
                 @Override
                 public void onEvent(int type, BaseTween<?> source) {
@@ -71,7 +71,6 @@ public class Historia implements Screen {
                 }
             }).start(tweenManager);
     }
-
 
     @Override
     public void show() {}
