@@ -30,7 +30,7 @@ public class Player extends InputController {
     private float gravity = -55f;  // Força da gravidade aplicada ao jogador
     private boolean jumping = false;  // Indica se o jogador está pulando
     private boolean IsDead = false;  // Indica se o jogador "morreu"
-    private int IsFliped = 0;  // Indica se o jogador esta virado
+    private boolean IsFliped = false;  // Indica se o jogador esta virado
     private float jumpVelocity = 300f, horizontaVelocity = 300f;  // Velocidades de pulo e movimento horizontal
     public int width = 64, height = 132;  // Tamanho do sprite do jogador
 
@@ -86,16 +86,12 @@ public class Player extends InputController {
         }
         
         // Se o jogador está "morto", muda para a tela de pontuação
-        
-        switch (IsFliped) {
-        case 1:
-            sprite.flip(true, false);  // Flipa a textura do jogador
-            break;
-        case 0:
+        if (IsFliped == true) {
+            sprite.flip(true, false);
+            IsFliped = false;// Flipa a textura do jogador
+        }
+        else
             sprite.flip(false, false);  // Flipa a textura do jogador para a original
-            break;
-    }
-
 
         // Atualiza a posição do sprite com base na nova posição do jogador
         sprite.setPosition(position.x, position.y);
@@ -132,11 +128,11 @@ public class Player extends InputController {
                 break;
             case Keys.D:
                 velocity.x = horizontaVelocity;  // Move o jogador para a direita
-                IsFliped = 0;
+                IsFliped = true;
                 break;
             case Keys.A:
                 velocity.x = -horizontaVelocity;  // Move o jogador para a esquerda
-                IsFliped = 1;
+                IsFliped = true;
                 break;
             case Keys.W:  // Para testes: faz o jogador pular ao pressionar W
                 jump();
