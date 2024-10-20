@@ -38,12 +38,12 @@ public class Play implements Screen {
 
     private void createPlatforms() {
         float baseY = 50; // Altura mínima para a primeira plataforma
-        float maxOffset = 100; // Deslocamento máximo entre as plataformas
-        float minOffset = 25; // Deslocamento mínimo entre as plataformas
+        float maxOffset = 120; // Deslocamento máximo entre as plataformas
+        float minOffset = 30; // Deslocamento mínimo entre as plataformas
         float lastY = baseY; // Começando a partir de baseY
 
         // Gerando plataformas em posições aleatórias
-        for (int i = 0; i < 30; i++) { 
+        for (int i = 0; i < 25; i++) { 
             float x = random.nextFloat() *( Gdx.graphics.getWidth() - plataformaTexture.getWidth()); // Posição X aleatória dentro da largura da tela
             
             // Calculando o novo Y com um deslocamento aleatório
@@ -66,11 +66,11 @@ public class Play implements Screen {
         // Desenhar jogador e plataformas
         batch.setProjectionMatrix(camera.combined); // Configurando a projeção da câmera
         batch.begin(); // Começando a sessão de desenho
-        player.getSprite().draw(batch); // Desenhando o jogador
         for (Plataforma platform : plataformas) {
             platform.getSprite().draw(batch); // Desenhando cada plataforma
         }
-        
+        player.getSprite().draw(batch); // Desenhando o jogador
+
         // Atualizando jogador e plataformas
         player.update(delta, plataformas);  // Atualizando o jogador e verificando colisões com as plataformas
         for (Plataforma platform : plataformas) {
