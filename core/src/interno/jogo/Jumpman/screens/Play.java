@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
@@ -13,6 +14,9 @@ import interno.jogo.Jumpman.Plataforma;
 import interno.jogo.Jumpman.Player;
 
 public class Play implements Screen {
+
+	private BitmapFont white;  // Fonte para o texto da pontuação
+	private int score = 0;     // Pontuação do jogador
     private OrthographicCamera camera; // Câmera para visualizar o jogo
     private Player player; // Instância do jogador
     private Array<Plataforma> plataformas; // Array para armazenar as plataformas
@@ -62,6 +66,11 @@ public class Play implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT); // Limpando a tela
         camera.update(); // Atualizando a câmera
+        
+        // Verifica se o jogador está subindo
+        if (player.isRising()) {
+            score++; // Aumenta a pontuação enquanto o jogador está subindo
+        }
 
         // Desenhar jogador e plataformas
         batch.setProjectionMatrix(camera.combined); // Configurando a projeção da câmera
@@ -76,11 +85,17 @@ public class Play implements Screen {
         for (Plataforma platform : plataformas) {
             platform.update(delta); // Atualizando as plataformas
         }
+
+        white.draw(batch, "Score: " + score, 10, Gdx.graphics.getHeight() - 10);
+
         batch.end(); // Finalizando a sessão de desenho
     }
 
     @Override
     public void show() {
+    	
+    	white = new BitmapFont(Gdx.files.internal("font/Branca.fnt"), false);  // Fonte branca
+
         // Configurando o processador de entrada
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override

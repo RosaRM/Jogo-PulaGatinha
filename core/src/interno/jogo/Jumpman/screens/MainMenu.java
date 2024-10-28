@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import aurelienribon.tweenengine.TweenManager;
 import interno.jogo.Jumpman.JumpMain;
 
 public class MainMenu implements Screen {

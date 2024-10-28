@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Screen;
+
+import interno.jogo.Jumpman.screens.MainMenu;
 import interno.jogo.Jumpman.screens.Splash;
 
 public class JumpMain extends Game {
@@ -15,7 +17,7 @@ public class JumpMain extends Game {
 	
 	@Override
 	public void create () {
-		setScreen(new Splash());
+		setScreen(new MainMenu());
 	}
 
 	@Override

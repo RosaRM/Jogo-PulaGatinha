@@ -1,40 +1,35 @@
-sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../core/assets"]
+apply plugin: 'java'
+apply plugin: 'application'
 
-project.ext.mainClassName = "interno.mygdx.game.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../core/assets")
+sourceCompatibility = 1.8 // ou 1.7, se necessário
 
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
+mainClassName = 'interno.mygdx.game.desktop.DesktopLauncher'
+
+repositories {
+    mavenCentral()
 }
 
-task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    // Outras dependências
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['../core/assets']
+}
+
+task run(type: JavaExec) {
+    main = mainClassName
     classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-    debug = true
+    workingDir = projectDir
 }
 
 task dist(type: Jar) {
     manifest {
-        attributes 'Main-Class': project.mainClassName
+        attributes 'Main-Class': mainClassName
     }
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     with jar
 }
-
-
-dist.dependsOn classes
-
-eclipse.project.name = appName + "-desktop"
-
