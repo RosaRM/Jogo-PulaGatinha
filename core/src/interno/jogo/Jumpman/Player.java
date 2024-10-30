@@ -21,12 +21,12 @@ public class Player  {
     private Sprite sprite;  // Representa a imagem do jogador
     private Vector2 position;  // Vetor que armazena a posição (x, y) do jogador
     private Vector2 velocity;  // Vetor para a velocidade (x, y) do jogador
-    private float gravity = -550f;  // Força da gravidade aplicada ao jogador
+    private float gravity;  // Força da gravidade aplicada ao jogador
     private boolean IsJumping = false;  // Indica se o jogador está pulando
     private boolean IsDead = false;  // Indica se o jogador "morreu"
     private boolean IsRising = false;  // Indica se o jogador "morreu"
     private boolean IsFliped = false;  // Indica se o jogador esta virado
-    private float jumpVelocity = 650f, horizontaVelocity = 300f;  // Velocidades de pulo e movimento horizontal
+    private float jumpVelocity = 650f, horizontaVelocity = 250f;  // Velocidades de pulo e movimento horizontal
     public int width = 64, height = 132;  // Tamanho do sprite do jogador
 
     // Construtor da classe Player
@@ -42,8 +42,8 @@ public class Player  {
 
     // Método update: atualiza a lógica do jogador a cada frame
     public void update(float deltaTime, Array<Plataforma> plataformas) {
-		System.out.println(gravity);
-		
+        System.out.println();
+        
 		// Lógica de movimentação para reposicionar o jogador se sair da tela
         float playerWidth = sprite.getWidth();
         if (position.x > (Gdx.graphics.getWidth() - playerWidth /2)) {
@@ -54,14 +54,16 @@ public class Player  {
 
         // Aplica a gravidade se o jogador estiver no ar
         if (position.y > 0 || velocity.y > 0) {
-            velocity.y += gravity * deltaTime;  // Atualiza a velocidade vertical com base na gravidade
+            velocity.y += gravity * deltaTime;  // Atualiza a velocidade vertical com base na dade
         }
-        
+        if (velocity.y == 0) {
+        }
         // Aplica a gravidade se o jogador estiver no ar
         if (velocity.y < 0) {
-        	gravity = -550 * 1.6f;
+
+        	gravity = -750 * 1.6f;
         }else
-        	gravity = -550;
+        	gravity = -750;
         
         // Atualiza a posição do jogador com base na velocidade
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
@@ -69,6 +71,7 @@ public class Player  {
         // Verifica colisões com plataformas
         for (Plataforma plataforma : plataformas) {
             if (isOnPlatform(plataforma) && velocity.y < 0) {
+
                 // O jogador pula automaticamente ao pousar em uma plataforma
                 jump();
                 break;

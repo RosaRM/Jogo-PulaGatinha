@@ -103,8 +103,7 @@ public class Pontuacao implements Screen {
         buttonReplay.pad(25); // Adiciona padding ao botão
 
         // Criação do Label para exibir a pontuação
-        int x = 1200; // Exemplo de pontuação
-        heading = new Label("Score: " + x, new LabelStyle(white, Color.PURPLE));
+        heading = new Label("Score: " + Play.score , new LabelStyle(white, Color.PURPLE));
         heading.setFontScale(1.5f); // Escala do texto
 
         // Organiza os elementos na tabela

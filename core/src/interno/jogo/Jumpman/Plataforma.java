@@ -36,7 +36,7 @@ public class Plataforma {
          }
     	 else
     		 velocity.y = 0;
-
+/*
         // Se a plataforma sair da parte inferior da tela (y < 0)
         if (position.y + sprite.getHeight() < 0) {
             // Reposiciona a plataforma no topo da tela em uma nova posição x aleatória
@@ -44,6 +44,7 @@ public class Plataforma {
             position.y = Gdx.graphics.getHeight() * 1.4f + MathUtils.random(0, 15);  // Define uma posição x aleatória dentro da largura da tela
             position.x = MathUtils.random(0, Gdx.graphics.getWidth() - sprite.getWidth());  // Define uma posição x aleatória dentro da largura da tela
         }
+*/
             // Atualiza a posição do sprite para a nova posição calculada
             sprite.setPosition(position.x, position.y);
 
