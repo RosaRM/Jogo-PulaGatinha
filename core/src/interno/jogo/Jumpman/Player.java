@@ -18,14 +18,14 @@ import interno.jogo.Jumpman.Plataforma;
 
 public class Player  {
     // Atributos da classe Player
-    private Sprite sprite;  // Representa a imagem do jogador
-    private Vector2 position;  // Vetor que armazena a posição (x, y) do jogador
-    private Vector2 velocity;  // Vetor para a velocidade (x, y) do jogador
+    protected Sprite sprite;  // Representa a imagem do jogador
+    protected Vector2 position;  // Vetor que armazena a posição (x, y) do jogador
+    protected Vector2 velocity;  // Vetor para a velocidade (x, y) do jogador
     private float gravity;  // Força da gravidade aplicada ao jogador
     private boolean IsJumping = false;  // Indica se o jogador está pulando
     private boolean IsDead = false;  // Indica se o jogador "morreu"
     private boolean IsRising = false;  // Indica se o jogador "morreu"
-    private boolean IsFliped = false;  // Indica se o jogador esta virado
+    protected boolean IsFliped = false;  // Indica se o jogador esta virado
     private float jumpVelocity = 650f, horizontaVelocity = 250f;  // Velocidades de pulo e movimento horizontal
     public int width = 64, height = 132;  // Tamanho do sprite do jogador
 
@@ -40,9 +40,38 @@ public class Player  {
         sprite.setPosition(position.x, position.y);  // Posiciona o sprite na tela com base na posição do jogador
     }
 
+    /*
+    // Verifica se o jogador está em uma plataforma
+    private boolean isOnPlatform(Plataforma plataforma) {
+    	float playerBottom = position.y; // Posição atual do  pé do jogador
+    	float playerPrevBottom = position.y - velocity.y * Gdx.graphics.getDeltaTime(); // Previsão so pé do jogador
+    	if (!IsFliped) {
+    		return playerPrevBottom <= plataforma.getPosition().y + plataforma.getSprite().getHeight() &&
+    				playerBottom > plataforma.getPosition().y && 
+    				position.x + sprite.getWidth()> plataforma.getPosition().x &&  // Verifica sobreposição no eixo X
+    				position.x  + 25  < plataforma.getPosition().x + plataforma.getSprite().getWidth();  // Verifica sobreposição no eixo X       
+    	}
+    	else {
+    		return playerPrevBottom <= plataforma.getPosition().y + plataforma.getSprite().getHeight() && // Check if the player was above the platform
+    				playerBottom > plataforma.getPosition().y && //
+    				position.x + sprite.getWidth() - 25 > plataforma.getPosition().x &&  // Verifica sobreposição no eixo X
+    				position.x   < plataforma.getPosition().x + plataforma.getSprite().getWidth();  // Verifica sobreposição no eixo X       
+    	}
+    }
+    */
+
     // Método update: atualiza a lógica do jogador a cada frame
     public void update(float deltaTime, Array<Plataforma> plataformas) {
         System.out.println();
+        // Verifica colisões com plataformas
+        for (Plataforma plataforma : plataformas) {
+            if (plataforma.isOnPlatform(this) ) {
+
+                // O jogador pula automaticamente ao pousar em uma plataforma
+                //jump();
+                break;
+            }
+        }
         
 		// Lógica de movimentação para reposicionar o jogador se sair da tela
         float playerWidth = sprite.getWidth();
@@ -68,15 +97,7 @@ public class Player  {
         // Atualiza a posição do jogador com base na velocidade
         position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 
-        // Verifica colisões com plataformas
-        for (Plataforma plataforma : plataformas) {
-            if (isOnPlatform(plataforma) && velocity.y < 0) {
 
-                // O jogador pula automaticamente ao pousar em uma plataforma
-                jump();
-                break;
-            }
-        }
 
         // Impede o jogador de cair abaixo do "chão"
         if (position.y <= 0) {
@@ -117,30 +138,15 @@ public class Player  {
     }
 
     
-    
-    // Verifica se o jogador está em uma plataforma
-    private boolean isOnPlatform(Plataforma plataforma) {
-    	// Mantem o pulo apenas quando encosta exatamente nos pês do jogador
-    	if (!IsFliped) {
-            return position.y > plataforma.getPosition().y  &&  // O jogador está acima da plataforma
-                   position.y - velocity.y * Gdx.graphics.getDeltaTime() <= plataforma.getPosition().y + plataforma.getSprite().getHeight() &&  // O jogador está pousando na plataforma
-                   position.x + sprite.getWidth()> plataforma.getPosition().x &&  // Verifica sobreposição no eixo X
-                   position.x  + 25  < plataforma.getPosition().x + plataforma.getSprite().getWidth();  // Verifica sobreposição no eixo X
-        	}
-    	else {
-            return position.y > plataforma.getPosition().y  &&  // O jogador está acima da plataforma
-                   position.y - velocity.y * Gdx.graphics.getDeltaTime() <= plataforma.getPosition().y + plataforma.getSprite().getHeight() &&  // O jogador está pousando na plataforma
-                   position.x + sprite.getWidth()- 25> plataforma.getPosition().x &&  // Verifica sobreposição no eixo X
-                   position.x    < plataforma.getPosition().x + plataforma.getSprite().getWidth();  // Verifica sobreposição no eixo X
-        	}
-    }
-    
+
+  
 
     // Método que faz o jogador pular
     public void jump() {
         velocity.y = jumpVelocity;  // Define a velocidade vertical para pular
         IsJumping = true;  // Marca que o jogador está pulando
     }
+    
     public boolean isRising() {
         return IsRising;
     }

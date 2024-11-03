@@ -29,6 +29,35 @@ public class Plataforma {
         sprite.setPosition(position.x, position.y);
     }
 
+    
+    // Verifica se o jogador está em uma plataforma
+    public boolean isOnPlatform(Player player) {
+    	float playerBottom = player.position.y; // Posição atual do  pé do jogador
+    	float playerPrevBottom = player.position.y - player.velocity.y * Gdx.graphics.getDeltaTime(); // Previsão so pé do jogador
+    	if (!player.IsFliped) {
+    		if(playerPrevBottom <= getPosition().y + getSprite().getHeight() &&
+    				playerBottom > getPosition().y && 
+    				player.position.x + player.sprite.getWidth()- 25> getPosition().x &&  // Verifica sobreposição no eixo X
+    				player.position.x   < getPosition().x + getSprite().getWidth() && player.velocity.y < 0 ) {// Verifica sobreposição no eixo X       
+                // O jogador pula automaticamente ao pousar em uma plataforma
+                player.jump();
+                return true;
+                }
+    	}
+    	else {
+    		if( playerPrevBottom <= getPosition().y + getSprite().getHeight() && // Check if the player was above the platform
+    				playerBottom > getPosition().y && //
+    				player.position.x + player.sprite.getWidth()  > getPosition().x &&  // Verifica sobreposição no eixo X
+    				player.position.x  + 25  < getPosition().x + getSprite().getWidth() && player.velocity.y < 0 ) { // Verifica sobreposição no eixo X       
+                
+    			player.jump();
+                return true;
+
+    		}
+    	}
+    	return false;
+    }
+    
     // Método update: atualiza a lógica da plataforma a cada frame
     public void update(float deltaTime) {
     	 if (movimentoAtivo) {
@@ -36,15 +65,7 @@ public class Plataforma {
          }
     	 else
     		 velocity.y = 0;
-/*
-        // Se a plataforma sair da parte inferior da tela (y < 0)
-        if (position.y + sprite.getHeight() < 0) {
-            // Reposiciona a plataforma no topo da tela em uma nova posição x aleatória
-            
-            position.y = Gdx.graphics.getHeight() * 1.4f + MathUtils.random(0, 15);  // Define uma posição x aleatória dentro da largura da tela
-            position.x = MathUtils.random(0, Gdx.graphics.getWidth() - sprite.getWidth());  // Define uma posição x aleatória dentro da largura da tela
-        }
-*/
+
             // Atualiza a posição do sprite para a nova posição calculada
             sprite.setPosition(position.x, position.y);
 
