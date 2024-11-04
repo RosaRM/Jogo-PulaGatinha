@@ -60,10 +60,15 @@ public class Play implements Screen {
 
             // Calculando o novo Y com um deslocamento aleatório
             float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
-            lastY += offsetY;
-
-            Plataforma plataforma = new Plataforma(plataformaTexture, x, lastY);
-            plataformas.add(plataforma);
+            lastY += offsetY;        
+            
+            if (random.nextFloat() < 0.05f) { // 10% de chance
+                Plataforma plataforma = new PlatHorizontal(plathorizonTexture, x, lastY);
+                plataformas.add(plataforma);
+            } else {
+                Plataforma plataforma = new Plataforma(plataformaTexture, x, lastY);
+                plataformas.add(plataforma);
+                }
         }
     }
 
@@ -97,7 +102,7 @@ public class Play implements Screen {
 	    // Criando o jogador e as plataformas
 	    plataformas = new Array<>();
 	    createPlatforms(); // Chamando o método para criar plataformas
-        plataformas.add(new PlatHorizontal(plathorizonTexture, PosX, PosY - 50)); // Adicionando uma plataforma inicial
+        plataformas.add(new Plataforma(plataformaTexture, PosX, PosY - 50)); // Adicionando uma plataforma inicial
 	    player = new Player(playerTexture, PosX, PosY); // Criando o jogador
 	}@Override
 	public void render(float delta) {
@@ -125,15 +130,19 @@ public class Play implements Screen {
 
 	    // Verificar se deve adicionar uma nova plataforma com base no espaçamento
 	    if (lastPlatformY < Gdx.graphics.getHeight() * 1.3) { 
-	        float maxOffset = 200 + score * 0.01f;  
-	        float minOffset = 150 + score * 0.05f;
+	        float maxOffset = 120 + score * 0.01f;  
+	        float minOffset = 60 + score * 0.05f;
 	        float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
 	        System.out.println("OFFSET" + offsetY);
 
 	        float x = MathUtils.random(10, Gdx.graphics.getWidth() - plataformaTexture.getWidth());
 	        float newY = lastPlatformY + offsetY; // Calcula a nova altura com o offset
 
-	        plataformas.add(new Plataforma(plataformaTexture, x, newY));
+	        if (random.nextFloat() < 0.075f) { // 5% de chance
+	            plataformas.add(new PlatHorizontal(plathorizonTexture, x, newY));
+	        } else {
+	            plataformas.add(new Plataforma(plataformaTexture, x, newY));
+	        }
 	        System.out.println("Nova plataforma criada. Tamanho atual do array: " + plataformas.size);
 	    }
 

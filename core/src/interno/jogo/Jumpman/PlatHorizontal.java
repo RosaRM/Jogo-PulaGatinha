@@ -13,7 +13,7 @@ public class PlatHorizontal extends Plataforma {
     public PlatHorizontal(Texture texture, float x, float y) {
         super(texture, x, y);  // Chama o construtor da classe base Plataforma
         this.direction = new Vector2(1, 0);  // Direção padrão (para cima)
-        this.speed = 100f;        // Velocidade padrão
+        this.speed = 150f;        // Velocidade padrão
         this.distance = 100f;     // Distância padrão
         this.originalX = x;      // Armazena a posição Y original para referência
     }
