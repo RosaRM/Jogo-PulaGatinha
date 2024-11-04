@@ -26,7 +26,7 @@ public class Player  {
     private boolean IsDead = false;  // Indica se o jogador "morreu"
     private boolean IsRising = false;  // Indica se o jogador "morreu"
     protected boolean IsFliped = false;  // Indica se o jogador esta virado
-    private float jumpVelocity = 650f, horizontaVelocity = 250f;  // Velocidades de pulo e movimento horizontal
+    private float jumpVelocity = 650f, horizontaVelocity = 275f;  // Velocidades de pulo e movimento horizontal
     public int width = 64, height = 132;  // Tamanho do sprite do jogador
 
     // Construtor da classe Player
@@ -62,7 +62,7 @@ public class Player  {
 
     // Método update: atualiza a lógica do jogador a cada frame
     public void update(float deltaTime, Array<Plataforma> plataformas) {
-        System.out.println();
+        //System.out.println();
         // Verifica colisões com plataformas
         for (Plataforma plataforma : plataformas) {
             if (plataforma.isOnPlatform(this) ) {
@@ -85,7 +85,8 @@ public class Player  {
         if (position.y > 0 || velocity.y > 0) {
             velocity.y += gravity * deltaTime;  // Atualiza a velocidade vertical com base na dade
         }
-        if (velocity.y == 0) {
+        if (velocity.y < -900) {
+        	velocity.y = -900;
         }
         // Aplica a gravidade se o jogador estiver no ar
         if (velocity.y < 0) {
@@ -114,6 +115,7 @@ public class Player  {
                 plataforma.ativarMovimento(true);
                 plataforma.setVel(velocity);
             }
+
         }
         // para o movimento se não estiver em posição
         else {

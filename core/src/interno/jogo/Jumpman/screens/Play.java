@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
+
+import interno.jogo.Jumpman.PlatHorizontal;
 import interno.jogo.Jumpman.Plataforma;
 import interno.jogo.Jumpman.Player;
 
@@ -24,6 +26,7 @@ public class Play implements Screen {
     private Array<Plataforma> plataformas; // Array para armazenar as plataformas
     private Texture playerTexture; // Textura do jogador
     private Texture plataformaTexture; // Textura das plataformas
+    private Texture plathorizonTexture; // Textura das plataformas
     private SpriteBatch batch; // Usado para desenhar sprites
     RandomXS128 random = new RandomXS128(); // Gerador de números aleatórios
     private Sprite bg;  // Imagem de fundo
@@ -34,6 +37,7 @@ public class Play implements Screen {
         // Carregando as texturas do jogador e da plataforma
         playerTexture = new Texture("img/gatinhaDoPula.png");
         plataformaTexture = new Texture("img/plataforma.png");
+        plathorizonTexture = new Texture("img/plataformaH.png");
 
         // Inicializando o jogador com a textura e posição definidas
         player = new Player(playerTexture, PosX, PosY);  
@@ -93,7 +97,7 @@ public class Play implements Screen {
 	    // Criando o jogador e as plataformas
 	    plataformas = new Array<>();
 	    createPlatforms(); // Chamando o método para criar plataformas
-        plataformas.add(new Plataforma(plataformaTexture, PosX, PosY - 50)); // Adicionando uma plataforma inicial
+        plataformas.add(new PlatHorizontal(plathorizonTexture, PosX, PosY - 50)); // Adicionando uma plataforma inicial
 	    player = new Player(playerTexture, PosX, PosY); // Criando o jogador
 	}@Override
 	public void render(float delta) {
@@ -121,9 +125,10 @@ public class Play implements Screen {
 
 	    // Verificar se deve adicionar uma nova plataforma com base no espaçamento
 	    if (lastPlatformY < Gdx.graphics.getHeight() * 1.3) { 
-	        float maxOffset = 120 + score * 0.1f;  
-	        float minOffset = 30 + score * 0.5f;
+	        float maxOffset = 200 + score * 0.01f;  
+	        float minOffset = 150 + score * 0.05f;
 	        float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
+	        System.out.println("OFFSET" + offsetY);
 
 	        float x = MathUtils.random(10, Gdx.graphics.getWidth() - plataformaTexture.getWidth());
 	        float newY = lastPlatformY + offsetY; // Calcula a nova altura com o offset

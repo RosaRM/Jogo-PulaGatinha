@@ -14,10 +14,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Plataforma {
     // Atributos da classe Plataforma
-    private Sprite sprite;  // Sprite que representa a imagem da plataforma
-    private Vector2 position;  // Vetor que armazena a posição (x, y) da plataforma
+    protected Sprite sprite;  // Sprite que representa a imagem da plataforma
+    protected Vector2 position;  // Vetor que armazena a posição (x, y) da plataforma
     private Vector2 velocity;  // Vetor que armazena a posição (x, y) da plataforma
-    private boolean movimentoAtivo = false;  // Controla se o movimento está ativado
+    protected boolean movimentoAtivo = false;  // Controla se o movimento está ativado
+    public int width = 65, height = 35;  // Tamanho do sprite do jogador
 
 
     // Construtor da classe Plataforma
@@ -27,34 +28,34 @@ public class Plataforma {
         this.velocity = new Vector2(0, 0);
         // Posiciona o sprite na tela com base na posição definida
         sprite.setPosition(position.x, position.y);
+        sprite.setSize(width, height);
+
     }
 
     
     // Verifica se o jogador está em uma plataforma
     public boolean isOnPlatform(Player player) {
+    	float playerFootLeft = 0;
+		float playerFootRight = 0;
     	float playerBottom = player.position.y; // Posição atual do  pé do jogador
     	float playerPrevBottom = player.position.y - player.velocity.y * Gdx.graphics.getDeltaTime(); // Previsão so pé do jogador
-    	if (!player.IsFliped) {
+    	if (player.IsFliped) {
+    		playerFootLeft = player.position.x + player.sprite.getWidth()- 25;
+    		playerFootRight = player.position.x; }
+		else {
+    		playerFootLeft = player.position.x + player.sprite.getWidth();
+    		 playerFootRight = player.position.x  + 25 ;    			
+		}
     		if(playerPrevBottom <= getPosition().y + getSprite().getHeight() &&
     				playerBottom > getPosition().y && 
-    				player.position.x + player.sprite.getWidth()- 25> getPosition().x &&  // Verifica sobreposição no eixo X
-    				player.position.x   < getPosition().x + getSprite().getWidth() && player.velocity.y < 0 ) {// Verifica sobreposição no eixo X       
-                // O jogador pula automaticamente ao pousar em uma plataforma
+    				playerFootLeft > getPosition().x &&  // Verifica sobreposição no eixo X
+    				playerFootRight  < getPosition().x + getSprite().getWidth() && player.velocity.y < 0 ) {// Verifica sobreposição no eixo X       
+    	        
+    			
+    			// O jogador pula automaticamente ao pousar em uma plataforma
                 player.jump();
                 return true;
                 }
-    	}
-    	else {
-    		if( playerPrevBottom <= getPosition().y + getSprite().getHeight() && // Check if the player was above the platform
-    				playerBottom > getPosition().y && //
-    				player.position.x + player.sprite.getWidth()  > getPosition().x &&  // Verifica sobreposição no eixo X
-    				player.position.x  + 25  < getPosition().x + getSprite().getWidth() && player.velocity.y < 0 ) { // Verifica sobreposição no eixo X       
-                
-    			player.jump();
-                return true;
-
-    		}
-    	}
     	return false;
     }
     
