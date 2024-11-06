@@ -1,4 +1,4 @@
-package interno.jogo.Jumpman;
+package interno.jogo.Jumpman.entities;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Game;
@@ -10,10 +10,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+
 import interno.jogo.Jumpman.screens.MainMenu;
 import interno.jogo.Jumpman.screens.Play;
 import interno.jogo.Jumpman.screens.Pontuacao;
-import interno.jogo.Jumpman.Plataforma;
 
 
 public class Player  {
@@ -62,11 +62,11 @@ public class Player  {
 
     // Método update: atualiza a lógica do jogador a cada frame
     public void update(float deltaTime, Array<Plataforma> plataformas) {
-        //System.out.println();
+        System.out.println();	
         // Verifica colisões com plataformas
         for (Plataforma plataforma : plataformas) {
             if (plataforma.isOnPlatform(this) ) {
-
+            	
                 // O jogador pula automaticamente ao pousar em uma plataforma
                 //jump();
                 break;
@@ -173,6 +173,7 @@ public class Player  {
                 if (IsFliped) {
                     sprite.flip(true, false); // Vira o sprite
                     IsFliped = false; // Atualiza a direção
+
                 }
                 velocity.x = horizontaVelocity; // Move o jogador para a direita                
                 break;
@@ -195,10 +196,12 @@ public class Player  {
 
     // Lida com eventos de tecla solta
     public boolean keyUp(int keycode) {
+    	if (keycode != 0) {
         if (keycode == Keys.A || keycode == Keys.D || keycode == Keys.LEFT || keycode == Keys.RIGHT) {
             velocity.x = 0;  // Para a movimentação horizontal quando as teclas A ou D são soltas
         } else {
             return false;
+        }
         }
         return true;
     }

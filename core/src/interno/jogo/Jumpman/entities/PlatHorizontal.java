@@ -1,4 +1,4 @@
-package interno.jogo.Jumpman;
+package interno.jogo.Jumpman.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -30,7 +30,7 @@ public class PlatHorizontal extends Plataforma {
             position.add(direction.x * speed * deltaTime, 0);
     	}
             // Verifica se a plataforma ultrapassou a distância máxima
-            if (Math.abs(position.x - originalX) >= distance) {
+            if (Math.abs(position.x - originalX) >= distance -1) {
                 // Inverte a direção do movimento
                 direction.scl(-1);
             }

@@ -13,9 +13,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.Array;
 
-import interno.jogo.Jumpman.PlatHorizontal;
-import interno.jogo.Jumpman.Plataforma;
-import interno.jogo.Jumpman.Player;
+import interno.jogo.Jumpman.entities.PlatHorizontal;
+import interno.jogo.Jumpman.entities.PlatVertical;
+import interno.jogo.Jumpman.entities.Plataforma;
+import interno.jogo.Jumpman.entities.Player;
 
 public class Play implements Screen {
 
@@ -30,7 +31,7 @@ public class Play implements Screen {
     private SpriteBatch batch; // Usado para desenhar sprites
     RandomXS128 random = new RandomXS128(); // Gerador de números aleatórios
     private Sprite bg;  // Imagem de fundo
-
+    private float likelihood  = 0.075f;
     public int PosX = 300, PosY = 200; // Posições iniciais do jogador
 
     public Play() {
@@ -62,10 +63,15 @@ public class Play implements Screen {
             float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
             lastY += offsetY;        
             
-            if (random.nextFloat() < 0.05f) { // 10% de chance
+            if (random.nextFloat() < likelihood -0.025) { // 10% de chance
+               // Plataforma plataforma = new PlatHorizontal(plathorizonTexture, x, lastY);
                 Plataforma plataforma = new PlatHorizontal(plathorizonTexture, x, lastY);
-                plataformas.add(plataforma);
-            } else {
+            	plataformas.add(plataforma);
+            } else if (random.nextFloat() < (likelihood -0.025) * 2 ) { // 10% de chance
+                    // Plataforma plataforma = new PlatHorizontal(plathorizonTexture, x, lastY);
+                     Plataforma plataforma = new PlatVertical(plathorizonTexture, x, lastY);
+                 	plataformas.add(plataforma);
+                 } else {
                 Plataforma plataforma = new Plataforma(plataformaTexture, x, lastY);
                 plataformas.add(plataforma);
                 }
@@ -124,7 +130,7 @@ public class Play implements Screen {
 
 	        if (plataforma.getPosition().y + plataforma.getSprite().getHeight() < 0) {
 	            plataformas.removeIndex(i);
-	            System.out.println("Plataforma destruída. Tamanho atual do array: " + plataformas.size);
+	        //    System.out.println("Plataforma destruída. Tamanho atual do array: " + plataformas.size);
 	        }
 	    }
 
@@ -133,17 +139,19 @@ public class Play implements Screen {
 	        float maxOffset = 120 + score * 0.01f;  
 	        float minOffset = 60 + score * 0.05f;
 	        float offsetY = random.nextFloat() * (maxOffset - minOffset) + minOffset;
-	        System.out.println("OFFSET" + offsetY);
+	       // System.out.println("OFFSET" + offsetY);
 
 	        float x = MathUtils.random(10, Gdx.graphics.getWidth() - plataformaTexture.getWidth());
 	        float newY = lastPlatformY + offsetY; // Calcula a nova altura com o offset
 
-	        if (random.nextFloat() < 0.075f) { // 5% de chance
-	            plataformas.add(new PlatHorizontal(plathorizonTexture, x, newY));
+	        if (random.nextFloat() < likelihood) { // 5% de chance
+                plataformas.add(new PlatVertical(plathorizonTexture, x, newY));
+	        }else if (random.nextFloat() < likelihood * 2) { // 5% de chance
+                plataformas.add(new PlatHorizontal(plathorizonTexture, x, newY));
 	        } else {
 	            plataformas.add(new Plataforma(plataformaTexture, x, newY));
 	        }
-	        System.out.println("Nova plataforma criada. Tamanho atual do array: " + plataformas.size);
+	     //   System.out.println("Nova plataforma criada. Tamanho atual do array: " + plataformas.size);
 	    }
 
 	    batch.setProjectionMatrix(camera.combined);

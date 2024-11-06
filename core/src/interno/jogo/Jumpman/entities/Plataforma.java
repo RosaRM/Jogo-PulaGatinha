@@ -1,4 +1,4 @@
-package interno.jogo.Jumpman;
+package interno.jogo.Jumpman.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.Gdx;
