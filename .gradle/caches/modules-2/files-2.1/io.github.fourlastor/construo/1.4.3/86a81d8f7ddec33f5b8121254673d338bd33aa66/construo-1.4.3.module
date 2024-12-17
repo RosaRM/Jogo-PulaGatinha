@@ -1,0 +1,78 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.github.fourlastor",
+    "module": "construo",
+    "version": "1.4.3",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.4"
+    }
+  },
+  "variants": [
+    {
+      "name": "shadowRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "shadowed",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "construo-1.4.3.jar",
+          "url": "construo-1.4.3.jar",
+          "size": 18355204,
+          "sha512": "1f00d213a073be5011c4e56c769a53c68f58f6cc310924f3269f458d917075ef7ae3becb0d946bdac43f6f89bd58f50e6e7ab221aa9638ab7a140b48311887fa",
+          "sha256": "8b5cf7ce2a250addacdb99a8a8b889cb7554e909058b457fff612234f011b3b2",
+          "sha1": "6590f82f7db861d065113e8df599bb688c635a40",
+          "md5": "61f3db51bc558cee8fdb4d1779d75589"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "construo-1.4.3-javadoc.jar",
+          "url": "construo-1.4.3-javadoc.jar",
+          "size": 261,
+          "sha512": "3ad089c5ce3decedcb02a60ff7cf88e7c5bd2ea32ecaa0fc031abe357c29da52588726943a28bf108713462e6a34a77768524d470568493171c3359d5b9d22a0",
+          "sha256": "ffd9be3b0f47c8e9603a7e9e396837f15ae2eb6cf79d45dc519547774f543f86",
+          "sha1": "773bdc50e50069d956cd97fda2ca5e46010887b1",
+          "md5": "74687e68b6d6f14bfd81d4268185e5cc"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "construo-1.4.3-sources.jar",
+          "url": "construo-1.4.3-sources.jar",
+          "size": 14093,
+          "sha512": "f1e18633c7a01b15b6f25f93ff67a1299b1c7590fec3899c73ec61eba4bdc0ef0d74142774975bfd1fecf98b8f19e2cdf40843c35fcbffcdf514cc9fa8e6c34b",
+          "sha256": "d0d7f8270f528bca675d2fabedb39627dacd26edd3560538422c3e3ca1818393",
+          "sha1": "6a02242e0348ef618db46fc7cbeabac463ff8c5c",
+          "md5": "96ba39d5387bd6cf0664d115390ec08b"
+        }
+      ]
+    }
+  ]
+}
